@@ -3,23 +3,42 @@
     <div class="bodyer">
         <div class="searchBox">
             <el-input v-model="musicName" placeholder="请输入音乐名称" maxlength="18" clearable
-                @keydown.enter="serachMusicName">
+                @keydown.enter="serachMusicForName">
                 <template #append>
-                    <el-button @click="serachMusicName"> <i-ep-search /> </el-button>
+                    <el-button @click="serachMusicForName"> <i-ep-search /> </el-button>
                 </template>
             </el-input>
+        </div>
+        <div class="musicList">
+            <div class="musicItem" v-for="item in musicList" :key="item.id">
+                <div class="musicName">{{ item.name }}</div>
+                <div class="musicAuthor">{{ item.author.join('/') }}</div>
+                <i-ep-UploadFilled class="saveIcon" @click="saveMusicForId(item.id)" />
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { searchMusic, saveMusic } from "@/api/music";
+import { IMusic } from "@/types/music";
+
 const musicName = ref<string>('')
 
-function serachMusicName() {
+const musicList = ref<IMusic[]>([])
+
+function serachMusicForName() {
     searchMusic({
-        name: musicName.value
+        name: musicName.value,
+        limit: 6
     }).then(res => {
+        musicList.value = res.data.list
+    })
+}
+
+function saveMusicForId(id: number) {
+    saveMusic({ id }).then(res => {
+        console.log(res.data);
     })
 }
 </script>
@@ -36,9 +55,14 @@ function serachMusicName() {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 1200px;
+    margin: 0 auto;
+
+    &>div {
+        width: 100%;
+    }
 
     :deep(.searchBox) {
-        width: 1200px;
 
         .el-input {
             .el-input__wrapper {
@@ -70,6 +94,36 @@ function serachMusicName() {
                     padding: 0 28px;
                 }
             }
+        }
+    }
+
+    .musicList {
+        margin-top: 30px;
+
+        .musicItem {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-radius: 20px;
+
+            .musicName {
+                font-size: 40px;
+                font-weight: bold;
+            }
+
+            .musicAuthor {
+                font-size: 28px;
+            }
+
+            .saveIcon {
+                font-size: 40px;
+                cursor: pointer;
+            }
+        }
+
+        .musicItem:hover {
+            background-color: #ccc;
         }
     }
 }

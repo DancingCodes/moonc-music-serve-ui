@@ -10,5 +10,6 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElInput: typeof import('element-plus/es')['ElInput']
     IEpSearch: typeof import('~icons/ep/search')['default']
+    IEpUploadFilled: typeof import('~icons/ep/upload-filled')['default']
   }
 }
