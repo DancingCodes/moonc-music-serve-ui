@@ -12,6 +12,18 @@ import IconsResolver from 'unplugin-icons/resolver'
 import path from 'path'
 
 export default defineConfig({
+  server: {
+    port: 8080,
+    host: '0.0.0.0',
+    proxy: {
+      '/dev-api': {
+        target: 'http://127.0.0.1:3003',
+        // target: 'https://api.moonc.love',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/dev-api/, '')
+      },
+    }
+  },
   plugins: [
     vue(),
     AutoImport({

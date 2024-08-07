@@ -2,9 +2,10 @@
     <div class="header"> Moonc - Music - Serve - Ui </div>
     <div class="bodyer">
         <div class="searchBox">
-            <el-input v-model="musicName" placeholder="请输入音乐名称" maxlength="18" clearable>
+            <el-input v-model="musicName" placeholder="请输入音乐名称" maxlength="18" clearable
+                @keydown.enter="serachMusicName">
                 <template #append>
-                    <el-button> <i-ep-search /> </el-button>
+                    <el-button @click="serachMusicName"> <i-ep-search /> </el-button>
                 </template>
             </el-input>
         </div>
@@ -12,8 +13,15 @@
 </template>
 
 <script setup lang="ts">
-// import { searchMusic, saveMusic } from "@/api/music";
+import { searchMusic, saveMusic } from "@/api/music";
 const musicName = ref<string>('')
+
+function serachMusicName() {
+    searchMusic({
+        name: musicName.value
+    }).then(res => {
+    })
+}
 </script>
 
 <style scoped lang="scss">
