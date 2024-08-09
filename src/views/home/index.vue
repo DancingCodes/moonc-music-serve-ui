@@ -11,8 +11,8 @@
                     </template>
                 </el-input>
             </div>
-            <div v-infinite-scroll="loadMusicList" :infinite-scroll-immediate="false" class="musicList"
-                v-loading="searchLoading">
+            <div v-show="searched" v-infinite-scroll="loadMusicList" :infinite-scroll-immediate="false"
+                class="musicList" v-loading="searchLoading">
                 <div class="musicItem" v-for="item in musicList" :key="item.id">
                     <div class="musicInfo">
                         <span class="musicName">
@@ -162,7 +162,7 @@ function saveMusicForMusic(music: IMusic) {
             overflow-y: scroll;
             flex: 1;
             margin-top: 30px;
-            padding-bottom: 30px;
+            margin-bottom: 30px;
             padding-right: 10px;
             box-sizing: border-box;
 

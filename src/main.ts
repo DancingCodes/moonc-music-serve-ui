@@ -3,8 +3,7 @@ import App from './App.vue'
 const app = createApp(App)
 
 import 'normalize.css';
-import '@/assets/css/font/index.scss'
-import '@/assets/css/selection/index.scss'
+import '@/assets/css/public/index.scss'
 
 import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
