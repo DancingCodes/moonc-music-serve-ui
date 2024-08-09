@@ -98,7 +98,7 @@ function loadMusicList() {
     if (musicList.value.length === musicTotal.value) {
         return
     }
-    searchParams.pageNo++
+    searchParams.pageNo && searchParams.pageNo++
     getMusicList().then(res => {
         musicList.value = [...musicList.value, ...res.data.list]
         musicTotal.value = res.data.total
@@ -216,9 +216,6 @@ function saveMusicForMusic(music: IMusic) {
                 padding: 0 10px;
 
                 .musicInfo {
-                    display: flex;
-                    align-items: center;
-                    column-gap: 20px;
                     flex: 1;
 
                     .musicName {
@@ -228,6 +225,7 @@ function saveMusicForMusic(music: IMusic) {
 
                     .musicAuthor {
                         font-size: 40px;
+                        margin-left: 20px;
                     }
                 }
 
