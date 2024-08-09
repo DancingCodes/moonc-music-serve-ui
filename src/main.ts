@@ -13,6 +13,3 @@ app.use(ElementPlus, {
 })
 
 app.mount('#app')
-
-// 代办
-// Mock / 自动化测试
