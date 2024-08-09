@@ -12,7 +12,7 @@
                 </el-input>
             </div>
             <div v-show="searched" v-infinite-scroll="loadMusicList" :infinite-scroll-immediate="false"
-                class="musicList" v-loading="searchLoading">
+                infinite-scroll-distance="1" class="musicList" v-loading="searchLoading">
                 <div class="musicItem" v-for="item in musicList" :key="item.id">
                     <div class="musicInfo">
                         <span class="musicName">
@@ -44,23 +44,40 @@ const searchLoading = ref<boolean>(false)
 const musicList = ref<IMusic[]>([])
 
 function serachMusicForName() {
+    if (!musicName.value.trim()) {
+        ElNotification({
+            title: 'warning',
+            message: '歌曲名称为空',
+            type: 'warning',
+        })
+        return
+    }
+
     if (!searched.value) {
         searched.value = true
     }
 
+    musicList.value = []
     searchLoading.value = true
-    searchMusic({
-        name: musicName.value,
-        limit: 20
-    }).then(res => {
+    getMusicList().then(res => {
         musicList.value = res.data.list
     }).finally(() => {
         searchLoading.value = false
     })
 }
 
+
+function getMusicList() {
+    return searchMusic({
+        name: musicName.value.trim(),
+        limit: 10
+    })
+}
+
 function loadMusicList() {
-    console.log(1);
+    getMusicList().then(res => {
+        musicList.value = [...musicList.value, ...res.data.list]
+    })
 }
 
 function saveMusicForMusic(music: IMusic) {
