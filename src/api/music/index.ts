@@ -3,10 +3,10 @@ import { IApiResponse } from "@/types/api";
 import { IMusic } from "@/types/music";
 
 
-interface ISearchMusicParams {
+export interface ISearchMusicParams {
     name: string;
-    offset?: number;
-    limit?: number;
+    pageNo?: number;
+    pageSize?: number;
 }
 
 interface ISearchMusicResponse {

@@ -3,7 +3,8 @@
         <div class="header"> Moonc - Music - Serve - Ui </div>
         <div class="bodyer" :class="{ searchBodyer: searched }">
             <div class="searchBox">
-                <el-input v-model="musicName" placeholder="请输入音乐名称" maxlength="18" @keydown.enter="serachMusicForName">
+                <el-input v-model="searchParams.name" placeholder="请输入音乐名称" maxlength="18"
+                    @keydown.enter="serachMusicForName">
                     <template #append>
                         <el-button :loading="searchLoading" @click="serachMusicForName">
                             <i-ep-search v-show="!searchLoading" />
@@ -27,6 +28,10 @@
                         <i-ep-UploadFilled v-if="!item.loading" />
                     </el-button>
                 </div>
+
+                <div v-show="loadMoreLoading" class="loadingBox">
+                    {{ musicList.length === searchParams.musicTotal ? '没有更多了' : '再来一些' }}
+                </div>
             </div>
         </div>
     </div>
@@ -35,16 +40,24 @@
 <script setup lang="ts">
 import { searchMusic, saveMusic } from "@/api/music";
 import { IMusic } from "@/types/music";
+import { ISearchMusicParams } from "@/api/music";
+
+
 
 const searched = ref<boolean>(false)
 
-const musicName = ref<string>('')
+const searchParams = reactive<ISearchMusicParams>({
+    name: '',
+    pageNo: 1,
+    pageSize: 10
+})
 const searchLoading = ref<boolean>(false)
-
 const musicList = ref<IMusic[]>([])
+const musicTotal = ref<number>(0)
+
 
 function serachMusicForName() {
-    if (!musicName.value.trim()) {
+    if (!searchParams.name.trim()) {
         ElNotification({
             title: 'warning',
             message: '歌曲名称为空',
@@ -57,10 +70,12 @@ function serachMusicForName() {
         searched.value = true
     }
 
+    searchParams.pageNo = 1
     musicList.value = []
     searchLoading.value = true
     getMusicList().then(res => {
         musicList.value = res.data.list
+        musicTotal.value = res.data.total
     }).finally(() => {
         searchLoading.value = false
     })
@@ -69,14 +84,23 @@ function serachMusicForName() {
 
 function getMusicList() {
     return searchMusic({
-        name: musicName.value.trim(),
-        limit: 10
+        ...searchParams,
+        name: searchParams.name.trim(),
     })
 }
 
+const loadMoreLoading = ref<boolean>(false)
 function loadMusicList() {
+    if (musicList.value.length === musicTotal.value) {
+        return
+    }
+
+    searchParams.pageNo++
+    loadMoreLoading.value = true
     getMusicList().then(res => {
         musicList.value = [...musicList.value, ...res.data.list]
+        musicTotal.value = res.data.total
+        loadMoreLoading.value = false
     })
 }
 
@@ -222,6 +246,29 @@ function saveMusicForMusic(music: IMusic) {
             .musicItem:hover {
                 background-color: hotpink;
                 color: #fff;
+            }
+
+            .loadingBox {
+                font-size: 30px;
+                text-align: center;
+
+                background: linear-gradient(to right, hotpink, #000);
+                background-size: 200% 100%;
+                background-position-x: 0;
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: animate-gradient 0.6s linear infinite alternate;
+            }
+
+            @keyframes animate-gradient {
+                0% {
+                    background-position-x: 0;
+                }
+
+                100% {
+                    background-position-x: 100%;
+                }
             }
 
             .el-loading-mask {
