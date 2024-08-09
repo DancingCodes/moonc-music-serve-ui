@@ -12,27 +12,31 @@
                     </template>
                 </el-input>
             </div>
-            <div v-show="searched" v-infinite-scroll="loadMusicList" :infinite-scroll-immediate="false"
-                infinite-scroll-distance="1" class="musicList" v-loading="searchLoading">
-                <div class="musicItem" v-for="item in musicList" :key="item.id">
-                    <div class="musicInfo">
-                        <span class="musicName">
-                            {{ item.name }}
-                        </span>
-                        <span class="musicAuthor">
-                            ({{ item.author.join('/') }})
-                        </span>
+            <!-- 搜索之后展示列表 -->
+            <template v-if="searched && !searchLoading">
+                <!-- 列表 -->
+                <div v-if="musicList.length" v-infinite-scroll="loadMusicList" :infinite-scroll-immediate="false"
+                    infinite-scroll-distance="1" class="musicList">
+                    <div class="musicItem" v-for="item in musicList" :key="item.id">
+                        <div class="musicInfo">
+                            <span class="musicName">
+                                {{ item.name }}
+                            </span>
+                            <span class="musicAuthor">
+                                ({{ item.author.join('/') }})
+                            </span>
+                        </div>
+                        <el-button link :loading="item.loading" @click="saveMusicForMusic(item)">
+                            <i-ep-UploadFilled v-if="!item.loading" />
+                        </el-button>
                     </div>
-
-                    <el-button link :loading="item.loading" @click="saveMusicForMusic(item)">
-                        <i-ep-UploadFilled v-if="!item.loading" />
-                    </el-button>
+                    <div class="loadingBox">
+                        {{ musicList.length === musicTotal ? '没有更多了' : '再来一些' }}
+                    </div>
                 </div>
-
-                <div v-show="loadMoreLoading" class="loadingBox">
-                    {{ musicList.length === searchParams.musicTotal ? '没有更多了' : '再来一些' }}
-                </div>
-            </div>
+                <!-- 空状态 -->
+                <el-empty class="empty" v-else description="空空如也" />
+            </template>
         </div>
     </div>
 </template>
@@ -72,6 +76,7 @@ function serachMusicForName() {
 
     searchParams.pageNo = 1
     musicList.value = []
+    musicTotal.value = 0
     searchLoading.value = true
     getMusicList().then(res => {
         musicList.value = res.data.list
@@ -89,18 +94,14 @@ function getMusicList() {
     })
 }
 
-const loadMoreLoading = ref<boolean>(false)
 function loadMusicList() {
     if (musicList.value.length === musicTotal.value) {
         return
     }
-
     searchParams.pageNo++
-    loadMoreLoading.value = true
     getMusicList().then(res => {
         musicList.value = [...musicList.value, ...res.data.list]
         musicTotal.value = res.data.total
-        loadMoreLoading.value = false
     })
 }
 
@@ -278,7 +279,20 @@ function saveMusicForMusic(music: IMusic) {
                 }
             }
         }
+
+        :deep(.empty) {
+            margin-top: 80px;
+
+            .el-empty__image {
+                width: 300px;
+            }
+
+            .el-empty__description p {
+                font-size: 30px;
+            }
+        }
     }
+
 
     .searchBodyer {
         padding-top: 0px;
