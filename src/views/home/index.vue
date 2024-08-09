@@ -13,8 +13,14 @@
             </div>
             <div class="musicList">
                 <div class="musicItem" v-for="item in musicList" :key="item.id">
-                    <div class="musicName">{{ item.name }}</div>
-                    <div class="musicAuthor">{{ item.author.join('/') }}</div>
+                    <div class="musicInfo">
+                        <span class="musicName">
+                            {{ item.name }}
+                        </span>
+                        <span class="musicAuthor">
+                            ({{ item.author.join('/') }})
+                        </span>
+                    </div>
                     <i-ep-UploadFilled class="saveIcon" @click="saveMusicForId(item.id)" />
                 </div>
             </div>
@@ -142,6 +148,7 @@ function saveMusicForId(id: number) {
 
         .musicList {
             margin-top: 30px;
+            width: 1200px;
 
             .musicItem {
                 display: flex;
@@ -150,23 +157,28 @@ function saveMusicForId(id: number) {
                 padding: 10px 0;
                 border-radius: 20px;
 
-                .musicName {
+                .musicInfo {
+                    display: flex;
+                    align-items: center;
+                    column-gap: 20px;
+                    flex: 1;
                     font-size: 40px;
-                    font-weight: bold;
+
+                    .musicName {
+                        font-weight: bold;
+                    }
+
+                    .musicAuthor {
+                        font-size: 36px;
+                    }
                 }
 
-                .musicAuthor {
-                    font-size: 28px;
-                }
+
 
                 .saveIcon {
                     font-size: 40px;
                     cursor: pointer;
                 }
-            }
-
-            .musicItem:hover {
-                background-color: #ccc;
             }
         }
     }
