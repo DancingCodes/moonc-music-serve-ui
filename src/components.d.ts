@@ -9,11 +9,11 @@ declare module 'vue' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElInput: typeof import('element-plus/es')['ElInput']
-    ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     IEpSearch: typeof import('~icons/ep/search')['default']
     IEpUploadFilled: typeof import('~icons/ep/upload-filled')['default']
   }
   export interface ComponentCustomProperties {
+    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

@@ -11,9 +11,8 @@
                     </template>
                 </el-input>
             </div>
-
-
-            <el-scrollbar class="musicList" v-loading="searchLoading">
+            <div v-infinite-scroll="loadMusicList" :infinite-scroll-immediate="false" class="musicList"
+                v-loading="searchLoading">
                 <div class="musicItem" v-for="item in musicList" :key="item.id">
                     <div class="musicInfo">
                         <span class="musicName">
@@ -28,7 +27,7 @@
                         <i-ep-UploadFilled v-if="!item.loading" />
                     </el-button>
                 </div>
-            </el-scrollbar>
+            </div>
         </div>
     </div>
 </template>
@@ -52,12 +51,16 @@ function serachMusicForName() {
     searchLoading.value = true
     searchMusic({
         name: musicName.value,
-        limit: 10
+        limit: 20
     }).then(res => {
         musicList.value = res.data.list
     }).finally(() => {
         searchLoading.value = false
     })
+}
+
+function loadMusicList() {
+    console.log(1);
 }
 
 function saveMusicForMusic(music: IMusic) {
@@ -156,6 +159,7 @@ function saveMusicForMusic(music: IMusic) {
 
         :deep(.musicList) {
             width: 1400px;
+            overflow-y: scroll;
             flex: 1;
             margin-top: 30px;
             padding-bottom: 30px;
