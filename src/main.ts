@@ -4,6 +4,7 @@ const app = createApp(App)
 
 import 'normalize.css';
 import '@/assets/css/font/index.scss'
+import '@/assets/css/config/index.scss'
 
 import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'

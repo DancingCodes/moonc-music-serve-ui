@@ -27,6 +27,7 @@ request.interceptors.response.use(
                 message: response.data.message,
                 type: 'warning',
             })
+            return Promise.reject(response.data.message);
         }
 
         return response.data;
