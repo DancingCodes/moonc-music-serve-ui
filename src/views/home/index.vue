@@ -1,8 +1,8 @@
 <template>
     <div class="home">
         <div class="header"> Moonc - Music - Serve - Ui </div>
-        <div class="bodyer">
-            <div class="searchBox" :class="{ searched: searched }">
+        <div class="bodyer" :class="{ searchBodyer: searched }">
+            <div class="searchBox">
                 <el-input v-model="musicName" placeholder="请输入音乐名称" maxlength="18" @keydown.enter="serachMusicForName">
                     <template #append>
                         <el-button :loading="searchLoading" @click="serachMusicForName">
@@ -11,7 +11,9 @@
                     </template>
                 </el-input>
             </div>
-            <div class="musicList">
+
+
+            <el-scrollbar class="musicList" v-loading="searchLoading">
                 <div class="musicItem" v-for="item in musicList" :key="item.id">
                     <div class="musicInfo">
                         <span class="musicName">
@@ -21,9 +23,12 @@
                             ({{ item.author.join('/') }})
                         </span>
                     </div>
-                    <i-ep-UploadFilled class="saveIcon" @click="saveMusicForId(item.id)" />
+
+                    <el-button link :loading="item.loading" @click="saveMusicForMusic(item)">
+                        <i-ep-UploadFilled v-if="!item.loading" />
+                    </el-button>
                 </div>
-            </div>
+            </el-scrollbar>
         </div>
     </div>
 </template>
@@ -47,7 +52,7 @@ function serachMusicForName() {
     searchLoading.value = true
     searchMusic({
         name: musicName.value,
-        limit: 6
+        limit: 10
     }).then(res => {
         musicList.value = res.data.list
     }).finally(() => {
@@ -55,19 +60,27 @@ function serachMusicForName() {
     })
 }
 
-function saveMusicForId(id: number) {
-    saveMusic({ id }).then(() => {
+function saveMusicForMusic(music: IMusic) {
+    music.loading = true
+    saveMusic({ id: music.id }).then(() => {
         ElNotification({
             title: 'success',
             message: '已上传',
             type: 'success',
         })
+    }).finally(() => {
+        music.loading = false
     })
 }
 </script>
 
 <style scoped lang="scss">
 .home {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+
     .header {
         font-size: 60px;
         padding: 30px 0;
@@ -75,6 +88,8 @@ function saveMusicForId(id: number) {
         font-weight: bold;
         animation: opacityShow 1s ease 0s forwards;
     }
+
+
 
     @keyframes opacityShow {
         from {
@@ -86,21 +101,20 @@ function saveMusicForId(id: number) {
         }
     }
 
+
     .bodyer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        flex: 1;
         margin: 0 auto;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding-top: 240px;
+        transition: all 0.5s;
 
-
-        .searched {
-            transition: margin-top 0.5s;
-            margin-top: 20px !important;
-        }
 
         :deep(.searchBox) {
             width: 1200px;
-            margin-top: 240px;
             animation: translateXShow 1s ease 0s forwards;
 
             .el-input {
@@ -112,12 +126,6 @@ function saveMusicForId(id: number) {
                         height: 100px;
                         font-size: 36px;
                         text-align: center;
-                    }
-
-                    .el-input__suffix {
-                        .el-icon {
-                            font-size: 50px;
-                        }
                     }
                 }
 
@@ -146,38 +154,93 @@ function saveMusicForId(id: number) {
             }
         }
 
-        .musicList {
+        :deep(.musicList) {
+            width: 1400px;
+            flex: 1;
             margin-top: 30px;
-            width: 1200px;
+            padding-bottom: 30px;
+            padding-right: 10px;
+            box-sizing: border-box;
 
             .musicItem {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 10px 0;
                 border-radius: 20px;
+                padding: 0 10px;
 
                 .musicInfo {
                     display: flex;
                     align-items: center;
                     column-gap: 20px;
                     flex: 1;
-                    font-size: 40px;
 
                     .musicName {
+                        font-size: 46px;
                         font-weight: bold;
                     }
 
                     .musicAuthor {
-                        font-size: 36px;
+                        font-size: 40px;
                     }
                 }
 
+                .el-button {
+                    font-size: 50px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                }
+            }
 
+            .musicItem:not(:first-child) {
+                margin-top: 30px;
+            }
 
-                .saveIcon {
-                    font-size: 40px;
-                    cursor: pointer;
+            .musicItem:hover {
+                background-color: hotpink;
+                color: #fff;
+            }
+
+            .el-loading-mask {
+                .circular {
+                    width: 100px;
+                    height: 100px;
+                }
+            }
+        }
+    }
+
+    .searchBodyer {
+        padding-top: 0px;
+
+        :deep(.searchBox) {
+            width: 1400px;
+
+            .el-input {
+                .el-input__wrapper {
+                    padding: 0 30px;
+                    border-radius: 20px 0 0 20px;
+
+                    .el-input__inner {
+                        height: 80px;
+                        font-size: 36px;
+                        text-align: center;
+                    }
+                }
+
+                .el-input-group__append {
+                    border-radius: 0 20px 20px 0;
+
+                    .el-button {
+                        font-size: 36px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100%;
+                        padding: 0 36px;
+                    }
                 }
             }
         }
