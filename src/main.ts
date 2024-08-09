@@ -11,4 +11,4 @@ app.use(ElementPlus, {
     locale: zhCn,
 })
 
-app.mount('#app')
+// app.mount('#app')
