@@ -42,15 +42,15 @@
 </template>
 
 <script setup lang="ts">
-import { searchMusic, saveMusic } from "@/api/music";
+import { searchMusicForWY, saveMusic } from "@/api/music";
 import { IMusic } from "@/types/music";
-import { ISearchMusicParams } from "@/api/music";
+import { IsearchMusicForWYParams } from "@/api/music";
 
 
 
 const searched = ref<boolean>(false)
 
-const searchParams = reactive<ISearchMusicParams>({
+const searchParams = reactive<IsearchMusicForWYParams>({
     name: '',
     pageNo: 1,
     pageSize: 10
@@ -88,7 +88,7 @@ function serachMusicForName() {
 
 
 function getMusicList() {
-    return searchMusic({
+    return searchMusicForWY({
         ...searchParams,
         name: searchParams.name.trim(),
     })
