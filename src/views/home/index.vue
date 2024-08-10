@@ -250,7 +250,6 @@ function saveMusicForMusic(music: IMusic) {
             .loadingBox {
                 font-size: 30px;
                 text-align: center;
-
                 background: linear-gradient(to right, hotpink, #000);
                 background-size: 200% 100%;
                 background-position-x: 0;
