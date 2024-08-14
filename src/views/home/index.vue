@@ -4,9 +4,9 @@
         <div class="bodyer" :class="{ searchBodyer: searched }">
             <div class="searchBox">
                 <el-input v-model="searchParams.name" placeholder="请输入音乐名称" maxlength="18"
-                    @keydown.enter="serachMusicForName">
+                    @keydown.enter="serachMusicByName">
                     <template #append>
-                        <el-button :loading="searchLoading" @click="serachMusicForName">
+                        <el-button :loading="searchLoading" @click="serachMusicByName">
                             <i-ep-search v-show="!searchLoading" />
                         </el-button>
                     </template>
@@ -26,7 +26,7 @@
                                 ({{ item.author.join('/') }})
                             </span>
                         </div>
-                        <el-button link :loading="item.loading" @click="saveMusicForMusic(item)">
+                        <el-button link :loading="item.loading" @click="saveMusicByMusic(item)">
                             <i-ep-UploadFilled v-if="!item.loading" />
                         </el-button>
                     </div>
@@ -42,15 +42,15 @@
 </template>
 
 <script setup lang="ts">
-import { searchMusicForWY, saveMusic } from "@/api/music";
+import { searchMusicByWY, saveMusic } from "@/api/music";
 import { IMusic } from "@/types/music";
-import { IsearchMusicForWYParams } from "@/api/music";
+import { IsearchMusicByWYParams } from "@/api/music";
 
 
 
 const searched = ref<boolean>(false)
 
-const searchParams = reactive<IsearchMusicForWYParams>({
+const searchParams = reactive<IsearchMusicByWYParams>({
     name: '',
     pageNo: 1,
     pageSize: 10
@@ -60,7 +60,7 @@ const musicList = ref<IMusic[]>([])
 const musicTotal = ref<number>(0)
 
 
-function serachMusicForName() {
+function serachMusicByName() {
     if (!searchParams.name.trim()) {
         ElNotification({
             title: 'warning',
@@ -88,7 +88,7 @@ function serachMusicForName() {
 
 
 function getMusicList() {
-    return searchMusicForWY({
+    return searchMusicByWY({
         ...searchParams,
         name: searchParams.name.trim(),
     })
@@ -105,7 +105,7 @@ function loadMusicList() {
     })
 }
 
-function saveMusicForMusic(music: IMusic) {
+function saveMusicByMusic(music: IMusic) {
     music.loading = true
     saveMusic({ id: music.id }).then(() => {
         ElNotification({
@@ -131,12 +131,12 @@ function saveMusicForMusic(music: IMusic) {
         padding: 30px 0;
         text-align: center;
         font-weight: bold;
-        animation: opacityShow 1s ease 0s forwards;
+        animation: showByOpacity 1s ease 0s forwards;
     }
 
 
 
-    @keyframes opacityShow {
+    @keyframes showByOpacity {
         from {
             opacity: 0;
         }
@@ -160,7 +160,7 @@ function saveMusicForMusic(music: IMusic) {
 
         :deep(.searchBox) {
             width: 1200px;
-            animation: translateXShow 1s ease 0s forwards;
+            animation: translateElByX 1s ease 0s forwards;
 
             .el-input {
                 .el-input__wrapper {
@@ -189,7 +189,7 @@ function saveMusicForMusic(music: IMusic) {
             }
         }
 
-        @keyframes translateXShow {
+        @keyframes translateElByX {
             from {
                 transform: translateX(-100%);
             }
@@ -256,15 +256,15 @@ function saveMusicForMusic(music: IMusic) {
                 -webkit-background-clip: text;
                 background-clip: text;
                 color: transparent;
-                animation: animate-gradient 0.6s linear infinite alternate;
+                animation: moveBackgroundByX 0.6s linear infinite alternate;
             }
 
-            @keyframes animate-gradient {
-                0% {
+            @keyframes moveBackgroundByX {
+                from {
                     background-position-x: 0;
                 }
 
-                100% {
+                to {
                     background-position-x: 100%;
                 }
             }

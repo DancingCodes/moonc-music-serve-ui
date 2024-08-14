@@ -3,19 +3,19 @@ import { IApiResponse } from "@/types/api";
 import { IMusic } from "@/types/music";
 
 
-export interface IsearchMusicForWYParams {
+export interface IsearchMusicByWYParams {
     name: string;
     pageNo?: number;
     pageSize?: number;
 }
 
-interface ISearchMusicForWYResponse {
+interface ISearchMusicByWYResponse {
     total: number;
     list: IMusic[]
 }
 
 
-export const searchMusicForWY = (params: IsearchMusicForWYParams): Promise<IApiResponse<ISearchMusicForWYResponse>> => request.get('/music/searchMusicForWY', { params })
+export const searchMusicByWY = (params: IsearchMusicByWYParams): Promise<IApiResponse<ISearchMusicByWYResponse>> => request.get('/music/searchMusicByWY', { params })
 
 
 interface ISaveMusicParams {
